@@ -7,6 +7,7 @@ import { fetchMovies } from '@/services/api';
 import { useRouter } from 'expo-router';
 import { icons } from '@/constants/icons';
 import SearchBar from "@/components/SearchBar";
+import { updateSearchCount } from '@/services/appwrite';
 
 const search = () => {
   const [searchQuery, setSearchQuery] = React.useState('');
@@ -25,6 +26,13 @@ const search = () => {
     const timeoutId = setTimeout(async () => {
       if (searchQuery.trim()) {
         await loadMovies();
+        if (movies?.length > 0) {
+            const bestMovie = movies.reduce((prev: { rating: number; views: number; }, current: { rating: number; views: number; }) => 
+          (current.rating > prev.rating || current.views > prev.views) ? current : prev
+            );
+            updateSearchCount(searchQuery, bestMovie);
+        }
+
       } else {
         reset();
       }
@@ -32,6 +40,12 @@ const search = () => {
 
     return () => clearTimeout(timeoutId);
   }, [searchQuery]);
+
+  useEffect(() => {
+      if (movies?.length > 0 && movies?.[0]) {
+        updateSearchCount(searchQuery, movies[0]);
+    }
+  }, [movies]);
 
   return (
     <View className='flex-1 bg-primary'>

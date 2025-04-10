@@ -15,7 +15,7 @@ const TabIcon = ({ focused, icon, title } : any) => {
           source={icon}
           tintColor="#151312" 
           className='size-5' />
-        <Text className='text-secondary text-base font-semibold'>
+        <Text className='text-secondary text-base font-semibold ml-2'>
           {title}
         </Text>
       </ImageBackground>
